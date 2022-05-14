@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7201824d-229f-44e7-9991-5809e5fb79bb}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>bot.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|PythonCore|3.9</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="awesome_bot\plugins\24dian\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\game\stone\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\game\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcrjjc\datasource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\control\model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\control\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\goodnight\model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\goodnight\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\help\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcrjjc\model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcrjjc\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcrnews\model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcrnews\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\permission\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\permission\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\randimage\datasource.py" />
+    <Compile Include="awesome_bot\plugins\thb\datasource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\language\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\operate\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\operate\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcr\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\remind\model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\randimage\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\remind\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\rollwife\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\roll\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\rule\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\operate\model.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\rule\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\select\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\pcrnews\datasource.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="awesome_bot\plugins\thb\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="bot.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="awesome_bot\" />
+    <Folder Include="awesome_bot\plugins" />
+    <Folder Include="awesome_bot\plugins\game\stone\" />
+    <Folder Include="awesome_bot\plugins\goodnight\" />
+    <Folder Include="awesome_bot\plugins\help\" />
+    <Folder Include="awesome_bot\plugins\control\" />
+    <Folder Include="awesome_bot\plugins\language\" />
+    <Folder Include="awesome_bot\plugins\24dian\" />
+    <Folder Include="awesome_bot\plugins\game\" />
+    <Folder Include="awesome_bot\plugins\pcrnews\" />
+    <Folder Include="awesome_bot\plugins\permission\" />
+    <Folder Include="awesome_bot\plugins\pcrjjc\" />
+    <Folder Include="awesome_bot\plugins\thb\" />
+    <Folder Include="awesome_bot\plugins\pcr\" />
+    <Folder Include="awesome_bot\plugins\select\" />
+    <Folder Include="awesome_bot\plugins\remind\" />
+    <Folder Include="awesome_bot\plugins\randimage\" />
+    <Folder Include="awesome_bot\plugins\rollwife\" />
+    <Folder Include="awesome_bot\plugins\operate\" />
+    <Folder Include="awesome_bot\plugins\roll\" />
+    <Folder Include="awesome_bot\plugins\rule\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".env" />
+    <Content Include=".env.dev" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.9" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
