@@ -1,0 +1,30 @@
+{
+  "plugins": [
+    "awesome_bot.plugins.control",
+    "awesome_bot.plugins.luck",
+    "awesome_bot.plugins.coin",
+    "awesome_bot.plugins.24dian",
+    "awesome_bot.plugins.echo",
+    "awesome_bot.plugins.goodnight",
+    "awesome_bot.plugins.language",
+    "awesome_bot.plugins.music",
+    "awesome_bot.plugins.poke",
+    "awesome_bot.plugins.remind",
+    "awesome_bot.plugins.rndimage",
+    "awesome_bot.plugins.roll",
+    "awesome_bot.plugins.rollwife",
+    "awesome_bot.plugins.select",
+    "awesome_bot.plugins.strange",
+    "awesome_bot.plugins.game",
+    "awesome_bot.plugins.game.g21",
+    "awesome_bot.plugins.game.guess_number",
+    "awesome_bot.plugins.game.tiger",
+    "awesome_bot.plugins.game.stone",
+    "awesome_bot.plugins.draw_card",
+    "awesome_bot.plugins.draw_card.user",
+    "awesome_bot.plugins.draw_card.shop",
+    "awesome_bot.plugins.draw_card.task",
+    "awesome_bot.plugins.draw_card.pool"
+  ],
+  "plugin_dirs": []
+}
