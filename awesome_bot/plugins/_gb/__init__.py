@@ -15,3 +15,9 @@ import random
 
 async def GetLuck(uid: str) -> int:
     return await Luck.GetLuck(uid)
+
+def get_bot():
+    from nonebot import get_bots
+    bots = get_bots()
+    for i in bots:
+        return bots[i]

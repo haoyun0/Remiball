@@ -4,6 +4,7 @@
     "awesome_bot.plugins.luck",
     "awesome_bot.plugins.coin",
     "awesome_bot.plugins.24dian",
+    "awesome_bot.plugins.bilibili",
     "awesome_bot.plugins.echo",
     "awesome_bot.plugins.goodnight",
     "awesome_bot.plugins.language",
