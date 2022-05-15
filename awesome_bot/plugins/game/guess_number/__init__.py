@@ -416,6 +416,8 @@ async def handle(bot: Bot, event: Event, state: T_State):
             if data[uid]['day']['times'] >= 3:
                 srt_day.append((data[uid]['day']['total'] / data[uid]['day']['times'], uid, data[uid]['day']['times']))
     srt.sort()
+    srt_day.sort()
+    srt_week.sort()
     mystr = '█排行榜(总)前十如下:' + get_rank(srt, 10)
     mystr += '\n\n█排行榜(周)前五如下:' + get_rank(srt_week, 5)
     mystr += '\n\n█排行榜(日)前三如下:' + get_rank(srt_day, 3)
