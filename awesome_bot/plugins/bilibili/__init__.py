@@ -1,5 +1,6 @@
 from .._gb import *
 from .datasource import get_dynamic, get_user_info
+import json
 
 dynamic_on = on_command('b站动态订阅', aliases={'bilibili动态订阅'}, rule=Check_('b站动态订阅', 'group'), priority=5, permission=ADMIN)
 
@@ -69,44 +70,59 @@ async def handle():
                 dic = item['modules']['module_dynamic']
                 msgs = []
                 if dic['desc'] is None:
-                    msgs.append(segement('text', text=data[uid]['name'] + '发了一条新动态:\n'))
+                    msgs.append(segement('text', text=data[uid]['name'] + '发了一条新动态:'))
                 else:
                     msgs.append(segement('text', text=data[uid]['name'] + '发了一条新动态:\n' + dic['desc']['text']))
                 if dic['major'] is not None:
                     if 'draw' in dic['major']: #图片
+                        msgs.append(segement('text', text='\n'))
                         pics = dic['major']['draw']['items']
                         for pic in pics:
                             src = pic['src']
                             msgs.append(segement('image', file=src, cache=0))
                     if 'archive' in dic['major']: #投稿
+                        msgs.append(segement('text', text='\n投稿了视频：'))
                         title = dic['major']['archive']['title']
-                        url = dic['major']['archive']['jump_url']
-                        while url[0] == '/':
-                            url = url[1:]
                         desc = dic['major']['archive']['desc']
-                        cover = dic['major']['archive']['cover']
-                        msgid = await bot.call_api('send_private_msg', user_id=847360401, message=[segement('image', file=cover)])
-                        msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
-                        cover = msg['message'][0]['data']['url']
+                        url = await get_valid_url(dic['major']['archive']['jump_url'])
+                        cover = await get_valid_cover(bot, dic['major']['archive']['cover'])
                         msgs.append(segement('share', url=url, content=desc, title=title, image=cover))
                     if 'article' in dic['major']: #投稿专栏
+                        msgs.append(segement('text', text='\n投稿了文章：'))
                         title = dic['major']['article']['title']
-                        url = dic['major']['article']['jump_url']
-                        while url[0] == '/':
-                            url = url[1:]
+                        url = await get_valid_url(dic['major']['article']['jump_url'])
                         if 'cover' in dic['major']['article']:
-                            cover = dic['major']['article']['cover']
+                            cover = await get_valid_cover(bot, dic['major']['article']['cover'])
                         elif 'covers' in dic['major']['article']:
-                            cover = dic['major']['article']['covers'][0]
+                            cover = await get_valid_cover(bot, dic['major']['article']['covers'][0])
                         else:
                             cover = ""
-                        msgid = await bot.call_api('send_private_msg', user_id=847360401,
-                                                   message=[segement('image', file=cover)])
-                        msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
-                        cover = msg['message'][0]['data']['url']
                         desc = dic['major']['article']['desc']
+                        msgs.append(segement('share', url=url, content=desc, title=title, image=cover))
+                    if 'live_rcmd' in dic['major']:
+                        msgs.append(segement('text', text='\n直播了：'))
+                        dic2 = json.loads(dic['major']['live_rcmd']['content'])['live_play_info']
+                        title = dic2['title']
+                        desc = dic2['watched_show']['text_large']
+                        cover = await get_valid_cover(bot, dic2['cover'])
+                        url = await get_valid_url(dic2['link'])
                         msgs.append(segement('share', url=url, content=desc, title=title, image=cover))
                 for gid in data[uid]['group']:
                     time.sleep(0.5)
                     await bot.call_api('send_group_msg', group_id=gid, message=msgs, auto_escape=False)
     await datax.output()
+
+async def get_valid_cover(bot, org_cover: str) -> str:
+    msgid = await bot.call_api('send_private_msg', user_id=847360401,
+                               message=[segement('image', file=org_cover)])
+    msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
+    return msg['message'][0]['data']['url']
+
+async def get_valid_url(org_url: str) -> str:
+    if org_url[:6] == 'https:':
+        org_url = org_url[6:]
+    elif org_url[:5] == 'http:':
+        org_url = org_url[5:]
+    while org_url[0] == '/':
+        org_url = org_url[1:]
+    return org_url
