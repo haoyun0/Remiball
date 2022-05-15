@@ -65,52 +65,48 @@ async def handle():
                     data[uid]['ids'].append(id_str)
                     if len(data[uid]['ids']) > 100:
                         del data[uid]['ids'][0]
+                bot = get_bot()
                 dic = item['modules']['module_dynamic']
+                msgs = []
                 if dic['desc'] is None:
-                    mystr = data[uid]['name'] + '发了一条新动态:'
+                    msgs.append(segement('text', text=data[uid]['name'] + '发了一条新动态:\n'))
                 else:
-                    mystr = data[uid]['name'] + '发了一条新动态:\n' + dic['desc']['text']
-                mystrs = []
+                    msgs.append(segement('text', text=data[uid]['name'] + '发了一条新动态:\n' + dic['desc']['text']))
                 if dic['major'] is not None:
                     if 'draw' in dic['major']: #图片
                         pics = dic['major']['draw']['items']
-                        if mystr != "":
-                            mystr += '\n'
                         for pic in pics:
                             src = pic['src']
-                            mystr += '[CQ:image,file=%s,cache=0]' % src
+                            msgs.append(segement('image', file=src, cache=0))
                     if 'archive' in dic['major']: #投稿
-                        if mystr != "":
-                            mystr += '\n'
-                        else:
-                            mystr += '视频投稿：\n'
                         title = dic['major']['archive']['title']
                         url = dic['major']['archive']['jump_url']
-                        cover = dic['major']['archive']['cover']
+                        while url[0] == '/':
+                            url = url[1:]
                         desc = dic['major']['archive']['desc']
-                        mystr += '[CQ:share,url=%s,title=%s,content=%s,image=%s]' % (url, title, desc, cover)
-                        # mystrs.append('[CQ:share,url="%s",title="%s",content="%s",image="%s"]' % (url, title, desc, cover))
+                        cover = dic['major']['archive']['cover']
+                        msgid = await bot.call_api('send_private_msg', user_id=847360401, message=[segement('image', file=cover)])
+                        msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
+                        cover = msg['message'][0]['data']['url']
+                        msgs.append(segement('share', url=url, content=desc, title=title, image=cover))
                     if 'article' in dic['major']: #投稿专栏
-                        if mystr != "":
-                            mystr += '\n'
-                        else:
-                            mystr += '专栏投稿：\n'
                         title = dic['major']['article']['title']
                         url = dic['major']['article']['jump_url']
+                        while url[0] == '/':
+                            url = url[1:]
                         if 'cover' in dic['major']['article']:
                             cover = dic['major']['article']['cover']
                         elif 'covers' in dic['major']['article']:
                             cover = dic['major']['article']['covers'][0]
                         else:
                             cover = ""
+                        msgid = await bot.call_api('send_private_msg', user_id=847360401,
+                                                   message=[segement('image', file=cover)])
+                        msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
+                        cover = msg['message'][0]['data']['url']
                         desc = dic['major']['article']['desc']
-                        mystr += '[CQ:share,url=%s,title=%s,content=%s,image=%s]' % (url, title, desc, cover)
-                        # mystrs.append('[CQ:share,url="%s",title="%s",content="%s",image="%s"]' % (url, title, desc, cover))
-                bot = get_bot()
+                        msgs.append(segement('share', url=url, content=desc, title=title, image=cover))
                 for gid in data[uid]['group']:
                     time.sleep(0.5)
-                    await bot.call_api('send_group_msg', group_id=gid, message=mystr, auto_escape=False)
-                    # for mstr in mystrs:
-                    #     time.sleep(0.5)
-                    #     await bot.call_api('send_group_msg', group_id=gid, message=mstr, auto_escape=False)
+                    await bot.call_api('send_group_msg', group_id=gid, message=msgs, auto_escape=False)
     await datax.output()
