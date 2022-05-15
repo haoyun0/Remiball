@@ -109,7 +109,7 @@ async def handle():
                         msgs.append(segement('share', url=url, content=desc, title=title, image=cover))
                 for gid in data[uid]['group']:
                     time.sleep(0.5)
-                    await bot.call_api('send_group_msg', group_id=gid, message=msgs, auto_escape=False)
+                    await bot.call_api('send_group_msg', group_id=gid, message=msgs)
     await datax.output()
 
 async def get_valid_cover(bot, org_cover: str) -> str:
