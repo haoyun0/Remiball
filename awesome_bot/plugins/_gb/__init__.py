@@ -21,3 +21,7 @@ def get_bot():
     bots = get_bots()
     for i in bots:
         return bots[i]
+
+def segement(type: str, **kwargs):
+    msg = {'type': type, 'data': kwargs}
+    return msg
