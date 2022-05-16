@@ -397,6 +397,6 @@ async def ceg():
     data['level_pool_up'] = [[], [], [], [], []]
     for i in range(len(data['level_name'])):
         data['up_st_id'][i] += data['level_up'][i]
-        if data['up_st_id'][i] >= data['level_num']:
+        if data['up_st_id'][i] >= data['level_num'][i]:
             data['up_st_id'][i] = 0
     await datax.output()
