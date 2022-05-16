@@ -29,7 +29,7 @@ con.addhelp("猜数字","""
 若带参数[付费复盘]，花费100Q，功能更强大
 若带参数[导师模式]，花费10000Q，复盘功能显性
 若带参数[外挂模式]，花费100000Q，每步给出几种建议
-若有账户可获得一丢丢Q奖励
+若有账户可获得一丢丢Q奖励，疲劳衰减注意
 相关指令：
 开始猜数字
 开始我来猜数字
@@ -182,11 +182,11 @@ async def receive(bot: Bot, event: Event, state: T_State):
         mystr = "恭喜你，猜中了！你本轮共猜了%d次" % state['times']
         if z >= 0:
             getq = state['money'] * guess_bonus[state['times'] - 1]
-            if data[uid]['day']['times'] > 50:
+            if data[uid]['day']['times'] > 34:
                 getq = 0
                 mystr += "\n疲劳了，不获得Q"
             else:
-                getq = int((1.02 - 0.02 * data[uid]['day']['times']) * getq)
+                getq = int((1.03 - 0.03 * data[uid]['day']['times']) * getq)
                 buff_f = require('awesome_bot.plugins.draw_card.user').getBuff
                 buff = await buff_f(uid)
                 if buff > 0:
