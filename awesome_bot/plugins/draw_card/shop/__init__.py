@@ -130,15 +130,19 @@ async def price_reflash(uid):
     luck = await GetLuck(uid)
     while time.time() - data[uid]['last'] > 3600:
         data[uid]['last'] += 3600
-        data[uid]['single'] += random.randint(-130 + luck * 10, 70 + luck * 10)
-        data[uid]['ten'] += random.randint(-1300 + luck * 100, 700 + luck * 100)
+        ix = random.randint(95 + luck, 105) / 100
+        data[uid]['single'] = int(ix * data[uid]['single'])
+        ix = random.randint(95 + luck, 105) / 100
+        data[uid]['ten'] = int(ix * data[uid]['ten'])
     await datax.output()
 
 async def add_price(uid, op, save=True):
     luck = await GetLuck(uid)
     if op == 'single':
-        data[uid][op] += random.randint(50 + luck * 10, 200)
+        ix = random.randint(101 + luck, 110) / 100
+        data[uid][op] = int(ix * data[uid][op])
     elif op == 'ten':
-        data[uid][op] += random.randint(500 + luck * 100, 2000)
+        ix = random.randint(105 + luck * 2, 125) / 100
+        data[uid][op] = int(ix * data[uid][op])
     if save:
         await datax.output()
