@@ -28,26 +28,13 @@ class Con:
         self.help_list[name]['state'] = state
         if ow:
             self.help_list[name]['ow'] = ow
-    async def send(self, bot, event, message: str, at_sender=False, auto_escape=False) -> int:
+    async def send(self, bot, event, message, at_sender=False, auto_escape=False) -> int:
         gid = self.get_gid(event)
         if at_sender:
             message = "[CQ:at,qq=%d] " % event.user_id + message
         #message = "DEBUG:\nmessage_type:%s\nsub_type:%s\nmsgid:%s\n" % (event.message_type, event.sub_type, event.message_id) + message
         msgid = await bot.call_api("send_msg", message_type=event.message_type, user_id=event.user_id, group_id=gid, message=message, auto_escape=auto_escape)
-        msgid = str(msgid['message_id']).encode()
-        msgid = codecs.decode(msgid, 'base64')
-        if event.message_type == 'group':
-            gid = self.ByteToInt(msgid[0: 4])
-            uid = self.ByteToInt(msgid[4: 8])
-            seqid = self.ByteToInt(msgid[8: 12])
-            timestamp = self.ByteToInt(msgid[16: 20])
-        elif event.message_type == 'private':
-            uid = self.ByteToInt(msgid[0: 4])
-            seqid = self.ByteToInt(msgid[4: 8])
-            timestamp = self.ByteToInt(msgid[12: 16])
-        else:
-            seqid = 0
-        return seqid
+        return msgid['message_id']
 
     def get_gid(self, event):
         if event.message_type == 'group':
@@ -57,7 +44,24 @@ class Con:
                 return '19260817'  # 好友消息
             else:
                 return '60481729'  # 群临时会话
+
     def ByteToInt(self, s:bytes):
         return s[3] + 256 * (s[2] + 256 * (s[1] + 256 * s[0]))
+
+    async def sendNode(self, bot, event, messages: list):
+        ids = []
+        for message in messages:
+            msgid = await bot.call_api("send_group_msg", message_type=event.message_type, group_id=146099774,
+                                       message=message, auto_escape=False)
+            ids.append(msgid['message_id'])
+        msgs = []
+        for idx in ids:
+            msgs.append(segement('node', id=idx))
+        await self.send(bot, event, msgs)
+
+
+def segement(type: str, **kwargs):
+    msg = {'type': type, 'data': kwargs}
+    return msg
 
 con = Con()
