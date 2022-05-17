@@ -113,7 +113,7 @@ async def handle():
     await datax.output()
 
 async def get_valid_cover(bot, org_cover: str) -> str:
-    msgid = await bot.call_api('send_private_msg', user_id=847360401,
+    msgid = await bot.call_api('send_group_msg', group_id=146099774,
                                message=[segement('image', file=org_cover)])
     msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
     return msg['message'][0]['data']['url']
