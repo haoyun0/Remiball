@@ -14,6 +14,26 @@
 
 注意nonebot2的反向ws监听地址要与OICQ的上报地址一致
 
+
+
+重点事项：
+
+nonebot2的cqhttp的适配器adapters并不适配oicq
+
+oicq上报事件中的message_id和font不和传统cqhttp一样为int
+
+而是为str，会导致nonebot2无法handle_event
+
+解决方法，把其event类的对应两个属性改为str类型
+
+具体为找到:Python39\Lib\site-packages\nonebot\adapters\cqhttp里面的event.py文件
+
+将class MessageEvent(Event):类
+
+里面的message_id和font属性改为str
+
+这样就能正常接受消息了
+
 ### 文件介绍
 
 .env.dev
