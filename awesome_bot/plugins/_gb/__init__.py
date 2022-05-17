@@ -3,7 +3,7 @@ from nonebot.adapters import Bot, Event
 from nonebot import require, export
 from nonebot import on_command
 from .gb_database import DataList
-from .gb_control import con
+from .gb_control import con, segement
 from .gb_card import card
 from .gb_coin import coin
 from .gb_luck import Luck
@@ -22,6 +22,4 @@ def get_bot():
     for i in bots:
         return bots[i]
 
-def segement(type: str, **kwargs):
-    msg = {'type': type, 'data': kwargs}
-    return msg
+
