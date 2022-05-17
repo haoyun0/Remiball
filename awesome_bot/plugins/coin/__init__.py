@@ -10,6 +10,7 @@ coin_store = on_command("存Q", rule=Check_("存Q"), priority=5)
 coin_load = on_command("取Q", rule=Check_("取Q"), priority=5)
 coin_qbank = on_command("QBank", aliases={"Q存款"}, rule=Check_("QBank"), priority=5)
 coin_loan = on_command("借Q", rule=Check_("借Q"), priority=5)
+coin_give = on_command("转Q", rule=Check_("转Q"), priority=5)
 
 
 
@@ -22,7 +23,8 @@ cmds = [
 '存Q',
 '取Q',
 'QBank',
-'借Q'
+'借Q',
+'转Q'
 ]
 
 con.addcmds('好感度系统',cmds)
@@ -31,7 +33,7 @@ con.addhelp('好感度系统',"""
 连续签到有额外奖励，还能增加蕾米球好感度
 发送“打卡/签到”即可签到
 （代币单位为Q，指球币）
-发送“个人信息”可查看自己Q好感度等
+发送“个人信息”可查看自己Q,好感度等
 QBank请查看QBank的帮助
 """.strip(), ['好感度','好感度功能','Q','Q系统','货币系统'])
 con.addhelp('QBank',"""
@@ -42,6 +44,7 @@ QBank提供存取Q的服务
 取Q x:从QBank取xQ出来
 QBank:查看QBank里存了多少Q，欠了多少Q
 借Q x:可借至多好感度*100的Q，借贷后所有收入25%将自动还款，不能主动还款，欠款时不能继续借，不收利息
+转Q qq x:转给qq,xQ (转的是现Q，不是存款)
 """.strip())
 
 
@@ -255,3 +258,33 @@ async def handle(bot: Bot, event: Event, state: T_State):
             await con.send(bot, event, '参数非法')
     else:
         await con.send(bot, event, '参数非法')
+
+@coin_give.handle()
+async def handle(bot: Bot, event: Event, state: T_State):
+    msgs = str(event.get_message()).strip().split()
+    if len(msgs) != 2:
+        await con.send(bot, event, '格式错误')
+        await coin_give.finish()
+    uid = str(event.user_id)
+    qid = msgs[0]
+    z = msgs[1]
+    if not z.isnumeric():
+        await con.send(bot, event, '格式错误')
+        await coin_give.finish()
+    z = int(z)
+    if z <= 0:
+        await con.send(bot, event, '转让Q数量非法')
+        await coin_give.finish()
+    m = await coin.get(qid)
+    if m < 0:
+        await con.send(bot, event, '对方不存在Q账户')
+        await coin_give.finish()
+    m = await coin.get(uid)
+    if m < z:
+        await con.send(bot, event, '你不够Q')
+        await coin_give.finish()
+    await coin.modify(uid, -z)
+    await coin.modify(qid, z)
+    await con.send(bot, event, '成功转让%dQ给%s' % (z, qid), at_sender=True)
+    await coin_give.finish()
+
