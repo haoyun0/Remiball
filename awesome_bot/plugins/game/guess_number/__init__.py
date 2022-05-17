@@ -418,12 +418,11 @@ async def handle(bot: Bot, event: Event, state: T_State):
     srt.sort()
     srt_day.sort()
     srt_week.sort()
-    mystr = '█排行榜(总)前十如下:' + get_rank(srt, 10)
-    mystr += '\n\n█排行榜(周)前五如下:' + get_rank(srt_week, 5)
-    mystr += '\n\n█排行榜(日)前三如下:' + get_rank(srt_day, 3)
-
-
-    await con.send(bot, event, mystr)
+    msgs = []
+    msgs.append('排行榜(总)前三十如下:' + get_rank(srt, 30))
+    msgs.append('排行榜(周)前二十如下:' + get_rank(srt_week, 20))
+    msgs.append('排行榜(日)前十如下:' + get_rank(srt_day, 10))
+    await con.sendNode(bot, event, msgs)
     await game_guessnumberrank.finish()
 
 def get_rank(srt, l) -> str:
