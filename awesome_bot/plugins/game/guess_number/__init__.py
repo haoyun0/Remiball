@@ -409,11 +409,11 @@ async def handle(bot: Bot, event: Event, state: T_State):
     for uid in data:
         if uid.isnumeric():
             await data_examine(uid)
-            if data[uid]['times'] >= 10:
+            if data[uid]['times'] >= 50:
                 srt.append((data[uid]['total'] / data[uid]['times'], uid, data[uid]['times']))
-            if data[uid]['week']['times'] >= 5:
+            if data[uid]['week']['times'] >= 25:
                 srt_week.append((data[uid]['week']['total'] / data[uid]['week']['times'], uid, data[uid]['week']['times']))
-            if data[uid]['day']['times'] >= 3:
+            if data[uid]['day']['times'] >= 5:
                 srt_day.append((data[uid]['day']['total'] / data[uid]['day']['times'], uid, data[uid]['day']['times']))
     srt.sort()
     srt_day.sort()
