@@ -114,9 +114,12 @@ async def handle(bot: Bot, event: Event, state: T_State):
     await card.modify(uid, 'single', -10)
     idx = select_pool(uid)
     await office_other_draw(idx, up)
-    mystr = '你抽到了:'
+    mystr = '@%d\n你抽到了:' % event.user_id
+    light = 5
     for _ in range(10):
         level, ans = await office_getone(idx, up)
+        if level < light:
+            light = level
         mystr += '\n%s[id=%d]' % (data['level_name'][level], ans)
         upstar = await card.new_card(uid, data['level_name'][level], ans)
         if upstar > 0:
@@ -128,7 +131,15 @@ async def handle(bot: Bot, event: Event, state: T_State):
         for _ in range(x):
             await office_getone(idx, up)
     await datax.output()
-    await con.send(bot, event, mystr, at_sender=True)
+    if light == 0:
+        await con.send(bot, event, '\n金光', at_sender=True)
+    elif light == 1:
+        await con.send(bot, event, '\n紫光', at_sender=True)
+    elif light == 2:
+        await con.send(bot, event, '\n蓝光', at_sender=True)
+    else:
+        await con.send(bot, event, '\n白光', at_sender=True)
+    await con.sendNode(bot, event, [mystr])
     await office_single_ten.finish()
 
 @office_ten.handle()
@@ -149,9 +160,12 @@ async def handle(bot: Bot, event: Event, state: T_State):
     await card.modify(uid, 'ten', -1)
     idx = select_pool(uid)
     await office_other_draw(idx, up)
-    mystr = '你抽到了:'
+    mystr = '@%d\n你抽到了:' % event.user_id
+    light = 5
     for _ in range(10):
         level, ans = await office_getone(idx, up)
+        if level < light:
+            light = level
         mystr += '\n%s[id=%d]' % (data['level_name'][level], ans)
         upstar = await card.new_card(uid, data['level_name'][level], ans)
         if upstar > 0:
@@ -163,7 +177,15 @@ async def handle(bot: Bot, event: Event, state: T_State):
     for _ in range(x):
         await office_getone(idx, up)
     await datax.output()
-    await con.send(bot, event, mystr, at_sender=True)
+    if light == 0:
+        await con.send(bot, event, '\n金光', at_sender=True)
+    elif light == 1:
+        await con.send(bot, event, '\n紫光', at_sender=True)
+    elif light == 2:
+        await con.send(bot, event, '\n蓝光', at_sender=True)
+    else:
+        await con.send(bot, event, '\n白光', at_sender=True)
+    await con.sendNode(bot, event, [mystr])
     await office_ten.finish()
 
 def select_pool(uid):
