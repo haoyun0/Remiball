@@ -160,7 +160,7 @@ async def handle(bot: Bot, event: Event, state: T_State):
     org_state = submit_list[idx].copy()
     org_state['id'] = idx
     org_state['name'] = name
-    for pr in range(6, 8):
+    for pr in range(6, 11):
         copy_state = org_state.copy()
         copy_state['handler'] = len(submit_handler)
         copy_state['priority'] = pr
