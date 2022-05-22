@@ -6,10 +6,11 @@ class Card:
         self.data = self.datax.data
     async def new_user(self, uid: str):
         self.data[uid] = {
-            'single': 0,
-            'ten': 0,
-            'times': 0,
-            'card': {}
+            'single': 0,    #单抽券
+            'ten': 0,       #十连券
+            'times': 0,     #总抽卡次数
+            'card': {},     #拥有卡牌
+            'points': 0     #检测欧非得分，甲20分，乙5分，丙1分
         }
         await self.datax.output()
     async def modify(self, uid: str, type: str, num: int):
@@ -30,6 +31,13 @@ class Card:
     async def new_card(self, uid: str, level: str, idx: str) -> int:
         uid = str(uid)
         idx = str(idx)
+        self.data[uid]['times'] += 1
+        if level == '甲球':
+            self.data[uid]['points'] += 20
+        elif level == ' 乙球':
+            self.data[uid]['points'] += 5
+        elif level == ' 丙球':
+            self.data[uid]['points'] += 2
         if not level in self.data[uid]['card']:
             self.data[uid]['card'][level] = {}
         if not idx in self.data[uid]['card'][level]:
@@ -57,6 +65,7 @@ class Card:
         elif self.data[uid]['card'][level][idx]['n'] == 16:
             ans = 5
             self.data[uid]['card'][level][idx]['star'] = 5
+        self.data[uid]['times'] += 1
         await self.datax.output()
         return ans
 card = Card()
