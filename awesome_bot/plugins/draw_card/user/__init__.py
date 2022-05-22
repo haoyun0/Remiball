@@ -153,7 +153,54 @@ async def handle(bot: Bot, event: Event, state: T_State):
 
 @card_tot.handle()
 async def handle(bot: Bot, event: Event, state: T_State):
-    pass
+    # for uid in data:
+    #     points = 0
+    #     times = 0
+    #     for level in data[uid]['card']:
+    #         for idx in data[uid]['card'][level]:
+    #             times += data[uid]['card'][level][idx]['n']
+    #             if level == '甲球':
+    #                 points += data[uid]['card'][level][idx]['n']*20
+    #             if level == '乙球':
+    #                 points += data[uid]['card'][level][idx]['n']*5
+    #             if level == '丙球':
+    #                 points += data[uid]['card'][level][idx]['n']*2
+    #             if 's' in data[uid]['card'][level][idx]:
+    #                 del data[uid]['card'][level][idx]['s']
+    #     data[uid]['points'] = points
+    #     data[uid]['times'] = times
+    # await datax.output()
+    # await con.send(bot, event, '数据修复完成')
+    uid = str(event.user_id)
+    if data[uid]['times'] < 50:
+        await con.sned(bot, event, '抽卡次数过少，暂不参与统计')
+    tot = 1
+    now = data[uid]['points'] / data[uid]['times']
+    rank = 1
+    for uuid in data:
+        if data[uuid]['times'] >= 50:
+            tot += 1
+            if now < data[uuid]['points'] / data[uuid]['times']:
+                rank += 1
+    mystr = '\n你总共抽过%d次卡' % data[uid]['times']
+    mystr += '\n你在%d名玩家中排行第%d' % (tot, rank)
+    bit = (rank - 1) / tot
+    if bit < 0.05:
+        mystr += '\n鉴定为超级欧皇'
+    elif bit < 0.1:
+        mystr += '\n鉴定为欧皇'
+    elif bit < 0.3:
+        mystr += '\n鉴定为欧洲人'
+    elif bit < 0.7:
+        mystr += '\n鉴定为普通人'
+    elif bit < 0.9:
+        mystr += '\n鉴定为非洲人'
+    elif bit < 0.95:
+        mystr += '\n鉴定为非酋'
+    elif bit < 1:
+        mystr += '\n鉴定为超级非酋'
+    await con.send(bot, event, mystr, at_sender=True)
+
 
 async def GetBuff(uid):
     uid = str(uid)
