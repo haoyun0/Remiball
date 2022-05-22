@@ -6,6 +6,7 @@ card_own = on_command('卡牌仓库', rule=Check_('卡牌仓库'), priority=6)
 card_tot = on_command('抽卡生涯统计', rule=Check_('抽卡生涯统计'), priority=6)
 
 name_list = ['甲球', '乙球', '丙球', '丁球', '戊球']
+level_num = [10, 40, 100, 400, 1500]
 buff_list = [10, 2, 1, 0.2, 0.1]
 
 cmds = [
@@ -23,9 +24,24 @@ con.addhelp('抽卡系统统计', """
 以及查看卡牌图鉴
 指令:
 抽卡个人信息
-抽卡生涯统计(未完成)
+抽卡生涯统计
 卡牌仓库
 查看卡牌(未完成)
+""".strip())
+
+con.addhelp('卡牌仓库', """
+指令: 卡牌仓库
+可选参数:
+[品质] [未拥有] [第几页]
+请按顺序，其中品质为必须参数
+每页十种球
+例：
+卡牌仓库 甲球
+（默认甲球第一页）
+卡牌仓库 丁球 10
+（丁球第十页）
+卡牌仓库 丙球 未拥有 10
+（未拥有的丙球第十页）
 """.strip())
 
 datax = card.datax
@@ -44,23 +60,100 @@ async def handle(bot: Bot, event: Event, state: T_State):
 @card_own.handle()
 async def handle(bot: Bot, event: Event, state: T_State):
     uid = str(event.user_id)
+    msg = str(event.get_message()).strip().split()
     c = await card.get(uid, 'single')
     if c < 0:
         await card.new_user(uid)
-    mystr = '你拥有:'
-    for i in range(len(name_list)):
-        if name_list[i] in data[uid]['card']:
-            l = 0
-            star = [0] * 5
-            for idx in data[uid]['card'][name_list[i]]:
-                star[data[uid]['card'][name_list[i]][idx]['star'] - 1] += 1
-                l += data[uid]['card'][name_list[i]][idx]['n']
-            mystr += '\n' + name_list[i] + "%d张, 其中:" % l
-            for j in range(5):
-                if star[j] > 0:
-                    mystr += '\n\t%d星球%d种' % (j + 1, star[j])
-    await con.send(bot, event, mystr)
+    if len(msg) > 0:
+        if msg[0] in name_list:
+            if len(msg) > 1:
+                if msg[1] == '未拥有':
+                    flag = False
+                    if len(msg) > 2:
+                        if msg[2].isnumeric():
+                            page = int(msg[2])
+                            if page <= 0:
+                                await con.send(bot, event, '参数错误，请认真查看帮助')
+                                await card_own.finish()
+                        else:
+                            page = 1
+                            await con.send(bot, event, '参数错误，请认真查看帮助')
+                            await card_own.finish()
+                    else:
+                        page = 1
+                elif msg[1].isnumeric():
+                    page = int(msg[1])
+                    flag = True
+                    if page <= 0:
+                        await con.send(bot, event, '参数错误，请认真查看帮助')
+                        await card_own.finish()
+                else:
+                    flag = True
+                    page = 1
+                    await con.send(bot, event, '参数错误，请认真查看帮助')
+                    await card_own.finish()
+            else:
+                flag = True
+                page = 1
+            if flag:
+                page -= 1
+                if msg[0] in data[uid]['card']:
+                    mylist = []
+                    for idx in range(level_num[name_list.index(msg[0])]):
+                        if str(idx) in data[uid]['card'][msg[0]]:
+                            mylist.append('id:%d, %d星, 拥有%d张' % (idx, data[uid]['card'][msg[0]][str(idx)]['star'], data[uid]['card'][msg[0]][str(idx)]['n']))
+
+                    if page*10 >= len(mylist):
+                        page = (len(mylist) - 1) // 10
+                    st = page * 10
+                    mystr = '\n目前为你展示%s第%d页' % (msg[0], page + 1)
+                    for idx in range(st, st + 10):
+                        if idx >= len(mylist):
+                            break
+                        mystr += '\n' + mylist[idx]
+                    await con.send(bot, event, mystr, at_sender=True)
+                else:
+                    await con.send(bot, event, '你没有%s' % msg[0])
+            else:
+                page -= 1
+                if msg[0] in data[uid]['card']:
+                    mylist = []
+                    for idx in range(level_num[name_list.index(msg[0])]):
+                        if not str(idx) in data[uid]['card'][msg[0]]:
+                            mylist.append('id:%d, 未拥有' % idx)
+                    if page*10 >= len(mylist):
+                        page = (len(mylist) - 1) // 10
+                    st = page * 10
+                    mystr = '\n目前为你展示未有%s第%d页' % (msg[0], page + 1)
+                    for idx in range(st, st + 10):
+                        if idx >= len(mylist):
+                            break
+                        mystr += '\n' + mylist[idx]
+                    await con.send(bot, event, mystr, at_sender=True)
+                else:
+                    await con.send(bot, event, '你所以%s都没有' % msg[0])
+        else:
+            await con.send(bot, event, '不存在稀有度[%s]' % msg[0])
+    else:
+        mystr = '\n你拥有:'
+        for i in range(len(name_list)):
+            if name_list[i] in data[uid]['card']:
+                l = 0
+                star = [0] * 5
+                for idx in data[uid]['card'][name_list[i]]:
+                    star[data[uid]['card'][name_list[i]][idx]['star'] - 1] += 1
+                    l += data[uid]['card'][name_list[i]][idx]['n']
+                mystr += '\n' + name_list[i] + "%d张, 其中:" % l
+                for j in range(5):
+                    if star[j] > 0:
+                        mystr += '\n\t%d星球%d种' % (j + 1, star[j])
+        mystr += '\n\n输入帮助 卡牌仓库查看进一步帮助'
+        await con.send(bot, event, mystr, at_sender=True)
     await card_own.finish()
+
+@card_tot.handle()
+async def handle(bot: Bot, event: Event, state: T_State):
+    pass
 
 async def GetBuff(uid):
     uid = str(uid)
