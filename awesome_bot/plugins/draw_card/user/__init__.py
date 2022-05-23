@@ -239,6 +239,7 @@ async def handle(bot: Bot, event: Event, state: T_State):
             'name': None,
             'skill_name': None,
             'skill_desc': None,
+            'skill_limit': None,
             'output': None
         }
     mystr = '以下为%s%s的信息:' % (msg[0], msg[1])
@@ -274,6 +275,8 @@ async def handle(bot: Bot, event: Event, state: T_State):
                 data[uid]['card'][msg[0]][msg[1]]['day'] = day
                 data[uid]['card'][msg[0]][msg[1]]['times'] = 0
             mystr += '\n你今天已经使用过技能%d次' % data[uid]['card'][msg[0]][msg[1]]['times']
+            if dic['skill_limit'] is not None:
+                mystr += '\n\t发动次数限制: %d/day' % (int(dic['skill_limit']) * data[uid]['card'][msg[0]][msg[1]]['star'])
     await con.send(bot, event, mystr)
     await card_info.finish()
 

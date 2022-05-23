@@ -64,6 +64,8 @@ async def handle(bot: Bot, event: Event, state: T_State):
             state['op'] = 'skill_name'
         elif msg == '技能描述':
             state['op'] = 'skill_desc'
+        elif msg == '技能上限' or msg == '技能限制':
+            state['op'] = 'skill_limit'
         elif msg == '名称' or msg == '名字' or msg == '姓名' or msg == '称呼' or msg == '称谓':
             state['op'] = 'name'
         else:
