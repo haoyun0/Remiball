@@ -18,7 +18,7 @@ con.addhelp('老虎机', """
 扭到3只相同的球才有奖励
 参数为筹码，同样只能为10的正数次方
 运气好的话，能稳定赚Q
-每天每人天只能抽100次
+每天每人天能抽的次数跟好感度有关
 指令:
 """.strip(), ['老球机', '球球机'])
 
@@ -75,7 +75,10 @@ async def handle(bot: Bot, event: Event, state: T_State):
 
     uid = str(event.user_id)
     await user_exmine(uid)
-    if data[uid]['day_times'] >= 100:
+    love = await coin.get_love(uid)
+    if love < 100:
+        love = 100
+    if data[uid]['day_times'] >= love:
         await con.send(bot, event, "你今天不能再抽了")
         await tiger.finish()
 
