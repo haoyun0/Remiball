@@ -48,7 +48,7 @@ con.addhelp('抽卡系统抽卡', """
 删除模拟池子 [池子名字]
 """.strip())
 
-datax = DataList('card_pool')
+datax = cardpool.datax
 data = datax.data
 
 # data['fake_pool'] = {}
