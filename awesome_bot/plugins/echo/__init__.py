@@ -37,12 +37,15 @@ async def handle(bot: Bot, event: Event, state: T_State):
     # msgs.append(segement('face', id='123'))
     # msgs.append(segement('at', qq='847360401'))
     # msgs.append(segement('image', file='https://pics3.baidu.com/feed/5882b2b7d0a20cf4ce4aaa5d988e6830aeaf99ec.png'))
-    msgs.append(segement('image', file=r'C:\Database\image\xp\0xa0e66ae7d673fc3e.jpg'))
-    msgid = await bot.call_api('send_group_msg', message=msgs, group_id=event.group_id)
-    #msgid = await con.send(bot, event, msgs)
-    await con.send(bot, event, 'msg_id = %s' % msgid['message_id'])
-    msg = await bot.call_api('get_msg', message_id=msgid['message_id'])
-    await con.send(bot, event, 'get_msg = ' + str(msg))
+    #msgs.append(segement('text', text='这是一条测试消息'))
+    # msgid = await bot.call_api('send_group_msg', message='这是一条测试消息1', group_id=event.group_id)
+    # msgid2 = await bot.call_api('send_group_msg', message='这是一条测试消息2', group_id=event.group_id)
+    # msgs2 = []
+    # msgs2.append(segement('node', id=msgid['message_id']))
+    # msgs2.append(segement('node', id=msgid2['message_id'], nickname='球', user_id='847360401'))
+    # msgid3 = await con.send(bot, event, msgs2)
+    # await con.send(bot, event, 'msg3 = %s' % str(msgid3))
+    await con.sendNode(bot, event, ['测试消息1', '测试消息2'])
     await echo2.finish()
 
 @echo_rick.handle()
@@ -67,10 +70,14 @@ async def handle(bot: Bot, event: Event, state: T_State):
         content = msg[1]
     else:
         content = "分享一些可爱的白泽球图"
+    if len(msg) >=3:
+        url2 = msg[2]
+    else:
+        url2 = "vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4"
     msgs.append(segement('share',
                          title=title,
                          content=content,
-                         url="www.bilibili.com/video/BV1uT4y1P7CX",
+                         url=url2,
                          image=url)
                 )
     await bot.call_api('send_group_msg', message=msgs, group_id=event.group_id)
