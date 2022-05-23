@@ -31,7 +31,6 @@ class Card:
     async def new_card(self, uid: str, level: str, idx: str) -> int:
         uid = str(uid)
         idx = str(idx)
-        self.data[uid]['times'] += 1
         if level == '甲球':
             self.data[uid]['points'] += 20
         elif level == ' 乙球':
