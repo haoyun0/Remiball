@@ -5,6 +5,8 @@ from nonebot import on_command
 from .gb_database import DataList
 from .gb_control import con, segement
 from .gb_card import card
+from .gb_cardsets import cardset
+from .gb_cardpool import cardpool
 from .gb_coin import coin
 from .gb_luck import Luck
 from .gb_rule import Check_
