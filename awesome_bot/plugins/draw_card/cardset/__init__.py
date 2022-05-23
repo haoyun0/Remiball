@@ -60,13 +60,15 @@ async def handle(bot: Bot, event: Event, state: T_State):
             state['op'] = 'desc'
         elif msg == '封面' or msg == '图像' or msg == '立绘' or msg == '卡面':
             state['op'] = 'cover'
-        elif msg == '技能' or msg == '能力':
-            state['op'] = 'skill'
+        elif msg == '技能名称':
+            state['op'] = 'skill_name'
+        elif msg == '技能描述':
+            state['op'] = 'skill_desc'
         elif msg == '名称' or msg == '名字' or msg == '姓名' or msg == '称呼' or msg == '称谓':
             state['op'] = 'name'
         else:
             await con.send(bot, event, '没有条目: ' + msg)
-            await cardset_new.finish()
+            await cardset_new.reject()
         await con.send(bot, event, '请输入条目内容')
         state['step'] = 2
         await cardset_new.reject()
