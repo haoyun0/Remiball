@@ -26,7 +26,7 @@ con.addhelp('抽卡系统统计', """
 抽卡个人信息
 抽卡生涯统计
 卡牌仓库
-查看卡牌(未完成)
+查看卡牌
 """.strip())
 
 con.addhelp('卡牌仓库', """
@@ -131,7 +131,7 @@ async def handle(bot: Bot, event: Event, state: T_State):
                         mystr += '\n' + mylist[idx]
                     await con.send(bot, event, mystr, at_sender=True)
                 else:
-                    await con.send(bot, event, '你所以%s都没有' % msg[0])
+                    await con.send(bot, event, '你所有%s都没有' % msg[0])
         else:
             await con.send(bot, event, '不存在稀有度[%s]' % msg[0])
     else:
@@ -202,6 +202,80 @@ async def handle(bot: Bot, event: Event, state: T_State):
         mystr += '\n鉴定为超级非酋'
     await con.send(bot, event, mystr, at_sender=True)
     await card_tot.finish()
+
+@card_info.handle()
+async def handle(bot: Bot, event: Event, state: T_State):
+    msg = str(event.get_message()).strip().split()
+    if len(msg) == 2:
+        flag = True
+        if not msg[0] in name_list:
+            flag = False
+        if flag and msg[1].isnumeric():
+            idx = msg[1]
+            if 0 <= int(idx) < level_num[name_list.index(msg[0])]:
+                pass
+            else:
+                flag = False
+        else:
+            flag = False
+        if flag:
+            state['level'] = msg[0]
+            state['id'] = msg[1]
+        else:
+            await con.send(bot, event, '格式错误，格式: 查看卡牌 稀有度 id')
+            await card_info.finish()
+    else:
+        await con.send(bot, event, '请输入卡牌的稀有度及id')
+        await card_info.finish()
+    flag = True
+    if msg[0] in cardset.data:
+        if idx in cardset.data[msg[0]]:
+            dic = cardset.data[msg[0]][idx]
+            flag = False
+    if flag:
+        dic = {
+            'cover': None,
+            'desc': None,
+            'name': None,
+            'skill_name': None,
+            'skill_desc': None,
+            'output': None
+        }
+    mystr = '以下为%s%s的信息:' % (msg[0], msg[1])
+    if dic['name'] is None:
+        mystr += '\n名称: 暂无'
+    else:
+        mystr += '\n名称: ' + dic['name']
+    if dic['desc'] is None:
+        mystr += '\n描述: 暂无'
+    else:
+        mystr += '\n描述: ' + dic['desc']
+    cnt = 1
+    if dic['skill_name'] is not None:
+        mystr += '\n技能%d: 『%s』\n\t' % (cnt, dic['skill_name'])
+        cnt += 1
+        if dic['skill_desc'] is None:
+            mystr += '暂无描述'
+        else:
+            mystr += dic['skill_desc']
+    idx = name_list.index(msg[0])
+    mystr += '\n技能%d: 『%s』\n\t被动: 猜数字增益%.1f%%, 签到增益%.0f%%' % (cnt, msg[0], buff_list[idx], buff_list[idx] * 10)
+    flag = False
+    uid = str(event.user_id)
+    if uid in data:
+        if msg[0] in data[uid]['card']:
+            if msg[1] in data[uid]['card'][msg[0]]:
+                flag = True
+    if flag:
+        mystr += '\n你拥有该球%d星, 一共获得过%d张' % (data[uid]['card'][msg[0]][msg[1]]['star'], data[uid]['card'][msg[0]][msg[1]]['n'])
+        if msg[0] == '甲球':
+            day = int(time.strftime("%j", time.localtime(time.time())))
+            if day != data[uid]['card'][msg[0]][msg[1]]['day']:
+                data[uid]['card'][msg[0]][msg[1]]['day'] = day
+                data[uid]['card'][msg[0]][msg[1]]['times'] = 0
+            mystr += '\n你今天已经使用过技能%d次' % data[uid]['card'][msg[0]][msg[1]]['times']
+    await con.send(bot, event, mystr)
+    await card_info.finish()
 
 
 async def GetBuff(uid):
