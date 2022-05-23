@@ -5,8 +5,8 @@ card_info = on_command('查看卡牌', rule=Check_('查看卡牌'), priority=6)
 card_own = on_command('卡牌仓库', rule=Check_('卡牌仓库'), priority=6)
 card_tot = on_command('抽卡生涯统计', rule=Check_('抽卡生涯统计'), priority=6)
 
-name_list = ['甲球', '乙球', '丙球', '丁球', '戊球']
-level_num = [10, 40, 100, 400, 1500]
+name_list = cardpool.data['level_name']
+level_num = cardpool.data['level_num']
 buff_list = [10, 2, 1, 0.2, 0.1]
 
 cmds = [
