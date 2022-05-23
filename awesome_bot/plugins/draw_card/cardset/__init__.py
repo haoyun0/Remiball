@@ -2,6 +2,11 @@ from ..._gb import *
 
 cardset_new = on_command("新建卡牌", rule=Check_('新建卡牌'), permission=SUPERUSER, priority=3)
 
+cmds = [
+    '新建卡牌'
+]
+con.addcmds('模拟抽卡系统', cmds)
+
 datax = cardset.datax
 data = datax.data
 name_list = cardpool.data['level_name']
