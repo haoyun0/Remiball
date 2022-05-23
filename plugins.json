@@ -25,7 +25,8 @@
     "awesome_bot.plugins.draw_card.user",
     "awesome_bot.plugins.draw_card.shop",
     "awesome_bot.plugins.draw_card.task",
-    "awesome_bot.plugins.draw_card.pool"
+    "awesome_bot.plugins.draw_card.pool",
+    "awesome_bot.plugins.draw_card.cardset"
   ],
   "plugin_dirs": []
 }
