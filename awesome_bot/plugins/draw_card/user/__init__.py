@@ -173,7 +173,8 @@ async def handle(bot: Bot, event: Event, state: T_State):
     # await con.send(bot, event, '数据修复完成')
     uid = str(event.user_id)
     if data[uid]['times'] < 50:
-        await con.sned(bot, event, '抽卡次数过少，暂不参与统计')
+        await con.send(bot, event, '抽卡次数过少，暂不参与统计')
+        await card_tot.finish()
     tot = 1
     now = data[uid]['points'] / data[uid]['times']
     rank = 1
@@ -200,6 +201,7 @@ async def handle(bot: Bot, event: Event, state: T_State):
     elif bit < 1:
         mystr += '\n鉴定为超级非酋'
     await con.send(bot, event, mystr, at_sender=True)
+    await card_tot.finish()
 
 
 async def GetBuff(uid):
