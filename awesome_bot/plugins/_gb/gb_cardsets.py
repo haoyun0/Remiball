@@ -12,7 +12,8 @@ class CardSets:
             'cover': None,
             'desc': None,
             'name': None,
-            'skill': None,
+            'skill_name': None,
+            'skill_desc': None,
             'output': None
         }
         await self.datax.output()
