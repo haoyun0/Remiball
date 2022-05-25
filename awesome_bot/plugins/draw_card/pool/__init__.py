@@ -11,6 +11,7 @@ office_single_ten = on_command("抽卡单抽十连", rule=Check_("抽卡单抽")
 office_ten = on_command("抽卡十连", rule=Check_("抽卡十连"), priority=6)
 office_ask = on_command("查看概率", rule=Check_("查看概率"), priority=6)
 office_up = on_command("查看当前up", rule=Check_("查看当前up"), priority=6)
+office_new = on_command("新增卡牌", rule=Check_("新增卡牌"), permission=SUPERUSER, priority=4)
 
 scheduler = require('nonebot_plugin_apscheduler').scheduler
 
@@ -25,7 +26,8 @@ cmds = [
 '抽卡十连',
 '抽卡单抽十连',
 '查看当前up',
-'查看概率'
+'查看概率',
+'新增卡牌'
 ]
 
 con.addcmds('模拟抽卡系统', cmds)
@@ -62,6 +64,36 @@ data = datax.data
 # data['level_name'] = ['甲球', '乙球', '丙球', '丁球', '戊球']
 # data['level_card'] = {'甲球': 5, '乙球': 20, '丙球': 50, '丁球': 200, '戊球': 725}
 # data['level_up'] = [1, 2, 5, 10, 20]
+
+@office_new.handle()
+async def handle(bot: Bot, event: Event, state: T_State):
+    msg = str(event.get_message()).strip().split()
+    if len(msg) == 2:
+        flag = True
+        if not msg[0] in data['level_name']:
+            flag = False
+        if flag and msg[1].isnumeric():
+            if int(msg[1]) <= 0:
+                flag = False
+        else:
+            flag = False
+        if flag:
+            state['level'] = msg[0]
+            state['id'] = msg[1]
+        else:
+            await con.send(bot, event, '格式错误，格式: 稀有度 新增数量')
+            await office_new.reject()
+    else:
+        await con.send(bot, event, '请输入卡牌的稀有度以及新增数量')
+        await office_new.reject()
+    level = data['level_name'].index(msg[0])
+    data['level_num'][level] += int(msg[1])
+    data['level_pool'] = [[], [], [], [], []]
+    data['level_pool_up'] = [[], [], [], [], []]
+    await con.send(bot, event, '已为%s添加%s张新卡\n池子重置成功' % (msg[0], msg[1]))
+    await datax.output()
+    await office_new.finish()
+
 
 @office_single.handle()
 async def handle(bot: Bot, event: Event, state: T_State):
@@ -234,16 +266,16 @@ async def office_getone(idx, up):
     del data['pool'][idx][0]
     if len(data[pool][level]) == 0:
         cp = []
-        for org_id_ in range(data['level_num'][level] * 5):
+        for org_id_ in range(data['level_num'][level] * 3):
             cp.append(org_id_)
-        data[pool][level] = [0] * (data['level_num'][level] * 5)
+        data[pool][level] = [0] * (data['level_num'][level] * 3)
         for nid in range(data['level_num'][level]):
             if up:
-                y = 4
+                y = 2
                 if data['up_st_id'][level] <= nid < data['up_st_id'][level] + data['level_up'][level]:
                     y += data['level_num'][level] // data['level_up'][level]
             else:
-                y = 5
+                y = 3
             for _ in range(y):
                 x = random.choice(cp)
                 cp.remove(x)
