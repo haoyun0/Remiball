@@ -751,6 +751,7 @@ async def handle(bot: Bot, event: Event, state: T_State):
                 else:
                     await bot.sendTempMsg(group_id=gid, user_id=id, message=mystr)
         elif room[gid]['final']:
+            room[gid]['final'] = False
             mystr = "开始结算，场上剩余玩家有:"
             remain = []
             for p in room[gid]['players']:
@@ -814,6 +815,8 @@ async def handle(bot: Bot, event: Event, state: T_State):
                         soha = minn
                     pass
             del room[gid]
+            await g21x.finish()
+        else:
             await g21x.finish()
     #await con.send(bot, event, "now=" + str(room[gid]['now']) + '\ncnt=%d' % cnt)
     if fail_flag:
